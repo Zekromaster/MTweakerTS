@@ -36,7 +36,7 @@ export function turnToMinetweakerFormat(item?: string, quantity?: number, tags?:
 
 /* A pretty simple wrapper for fs. Just because calling the whole function is an hassle everytime */
 export class fs {
-	static private fls = require('fs');
+  private static fls = require('fs');
 	static wrtFile(file: string, content: string) {
 		this.fls.writeFileSync(file, content);
 	}
@@ -89,7 +89,7 @@ export class Script {
 
 	/* This function outputs to a file in the same folder. You can output to files in subfolders by giving the script a path as the name */
 	output(): void{
-		fs.createFile(this.name, this.returnCode());
+		fs.wrtFile(this.name, this.returnCode());
 		console.log("Created " + this.name + "! Have fun.")
   	}
 	
@@ -110,35 +110,46 @@ export class Script {
 	}
 
 	/* Adds a shaped recipe. */
-	addShapedRecipe(out: Item, inp: Array<Array<string>>){
-		type = "recipes.addShaped";
-		var input:Array<Array<string>> = inp;
-		this.addToCode(type + "(" + out.tweakerize() + ", " + finalArray + ");");
+	addShapedRecipe(out: [Item, number], inp: Array<Array<Item>>){
+		var input:Array<Array<Item>> = inp;
+		var fastTweakerize = x => x.tweakerize(); // Using arrow notation because it's elegant.
+		var inputString:Array<Array<string>> = input.map(subinput => subinput.map(fastTweakerize));
+		this.addToCode("recipes.addShaped(" + out[0].tweakerize(out[1]) + ", " + JSON.stringify(inputString) + ");");
 	}
+
 	/* Removes a shaped recipe */
 	removeRecipe(a: string){
 		this.addToCode("recipes.remove(<" + a + ">);");
 	}
 
 	/* Adds a shapeless recipe */
-	addShapelessRecipe(inp: Item, out: Array<string>){
-		this.addToCode("recipes.addShapeless(" + inp.tweakerize() + ", [" + out.join(", ") + "]);");
+	addShapelessRecipe(out: Item, inp: Array<Item>){
+		var fastTweakerize = x => x.tweakerize();
+		var inputString:Array<string> = inp.map(fastTweakerize);
+		this.addToCode("recipes.addShapeless(" + out.tweakerize() + ", " + JSON.stringify(inputString) + ");");
 	}
 	
 	/* Adds a smelting recipe */
 	addSmeltingRecipe(inp: string, out: Item){
-		this.addToCode("furnace.addRecipe(" + out.tweakerize() +", " + tweakerize(inp) + ");");
+		this.addToCode("furnace.addRecipe(" + out.tweakerize() +", " + turnToMinetweakerFormat(inp) + ");");
 	}
   	
 	/* Removes a smelting recipe by output */
 	removeSmeltingByOut(out: Item){
-		removed: Item = new Item(out.itemName);	
+		var removed: Item = new Item(out.itemName);	
     		this.addToCode("furnace.remove(" + removed.tweakerize() + ");");
 	}
 
 	/* Removes a smelting recipe by input */
 	removeSmeltingByIn(inp: Item){
-		removed: Item = new Item(out.itemName);
-		this.addToCode("furnace.remove(<*>, " removed.tweakerize() + ");");
+		var removed: Item = new Item(inp.itemName);
+		this.addToCode("furnace.remove(<*>, " + removed.tweakerize() + ");");
 	}
+}
+
+var a = new Item("minecraft:apple");
+var nll = new NullItem();
+var b = new Script("prova");
+b.addShapelessRecipe(a, [a, a, a, a, nll, a, a, a, a]);
+b.output();
  /* END GENERAL LIBRARY */
