@@ -147,9 +147,4 @@ export class Script {
 	}
 }
 
-var a = new Item("minecraft:apple");
-var nll = new NullItem();
-var b = new Script("prova");
-b.addShapelessRecipe(a, [a, a, a, a, nll, a, a, a, a]);
-b.output();
  /* END GENERAL LIBRARY */
