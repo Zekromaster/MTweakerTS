@@ -35,7 +35,7 @@ export function turnToMinetweakerFormat(item?: string, quantity?: number, tags?:
 }
 
 /* A pretty simple wrapper for fs. Just because calling the whole function is an hassle everytime */
-export class fs {
+class fs {
   private static fls = require('fs');
 	static wrtFile(file: string, content: string) {
 		this.fls.writeFileSync(file, content);
@@ -74,7 +74,7 @@ export class NullItem extends Item{
 export class Script {
 	name: string; // This name is gonna become the filename. Choose wisely.
 	code: Array<string>; // This array is just all the rows of code.
-	
+
 	/* Takes the name as an argument */
 	constructor(a: string){
 		this.name = a + ".zs";
@@ -92,7 +92,7 @@ export class Script {
 		fs.wrtFile(this.name, this.returnCode());
 		console.log("Created " + this.name + "! Have fun.")
   	}
-	
+
 	/* Adds a row to the script. */
 	addToCode(a: string): void{
 		this.code[this.code.length] = a;
@@ -103,7 +103,7 @@ export class Script {
 		let imported = a.split(".").reverse()[0];
 		this.addToCode("//Importing " + imported + "\nimport " + a + ";");
 	}
-	
+
 	/* THE NEXT FUNCTIONS ALL ADD TO THE SCRIPT */
 	print(a: string): void{
 		this.addToCode("print(" + a + ");");
@@ -128,15 +128,15 @@ export class Script {
 		var inputString:Array<string> = inp.map(fastTweakerize);
 		this.addToCode("recipes.addShapeless(" + out.tweakerize() + ", " + JSON.stringify(inputString) + ");");
 	}
-	
+
 	/* Adds a smelting recipe */
 	addSmeltingRecipe(inp: string, out: Item){
 		this.addToCode("furnace.addRecipe(" + out.tweakerize() +", " + turnToMinetweakerFormat(inp) + ");");
 	}
-  	
+
 	/* Removes a smelting recipe by output */
 	removeSmeltingByOut(out: Item){
-		var removed: Item = new Item(out.itemName);	
+		var removed: Item = new Item(out.itemName);
     		this.addToCode("furnace.remove(" + removed.tweakerize() + ");");
 	}
 
