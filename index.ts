@@ -91,7 +91,7 @@ export class Script {
 	output(): void{
 		fs.wrtFile(this.name, this.returnCode());
 		console.log("Created " + this.name + "! Have fun.")
-  	}
+  }
 
 	/* Adds a row to the script. */
 	addToCode(a: string): void{
