@@ -2,12 +2,14 @@
   "name": "mtweakerts",
   "version": "0.0.1",
   "description": "A Minetweaker script generator for 1.7.10",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^10.12.2"
   },
   "scripts": {
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
