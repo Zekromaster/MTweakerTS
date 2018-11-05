@@ -1,0 +1,22 @@
+{
+  "name": "mtweakerts",
+  "version": "0.0.1",
+  "description": "A Minetweaker script generator for 1.7.10",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^10.12.2"
+  },
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zekromaster/MTweakerTS.git"
+  },
+  "author": "Zekromaster <personal@zekromaster.net> (http://zekromaster.net)",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/Zekromaster/MTweakerTS/issues"
+  },
+  "homepage": "https://github.com/Zekromaster/MTweakerTS#readme"
+}
