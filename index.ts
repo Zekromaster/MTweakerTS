@@ -111,15 +111,14 @@ export class Script {
 
 	/* Adds a shaped recipe. */
 	addShapedRecipe(out: [Item, number], inp: Array<Array<Item>>){
-		var input:Array<Array<Item>> = inp;
 		var fastTweakerize = x => x.tweakerize(); // Using arrow notation because it's elegant.
-		var inputString:Array<Array<string>> = input.map(subinput => subinput.map(fastTweakerize));
+		var inputString:Array<Array<string>> = inp.map(entry => entry.map(fastTweakerize));
 		this.addToCode("recipes.addShaped(" + out[0].tweakerize(out[1]) + ", " + JSON.stringify(inputString) + ");");
 	}
 
 	/* Removes a shaped recipe */
-	removeRecipe(a: string){
-		this.addToCode("recipes.remove(<" + a + ">);");
+	removeRecipe(a: Item){
+		this.addToCode("recipes.remove(" + turnToMinetweakerFormat(a.itemName) + ");");
 	}
 
 	/* Adds a shapeless recipe */
@@ -130,8 +129,8 @@ export class Script {
 	}
 
 	/* Adds a smelting recipe */
-	addSmeltingRecipe(inp: string, out: Item){
-		this.addToCode("furnace.addRecipe(" + out.tweakerize() +", " + turnToMinetweakerFormat(inp) + ");");
+	addSmeltingRecipe(inp: Item, out: Item){
+		this.addToCode("furnace.addRecipe(" + out.tweakerize() +", " + turnToMinetweakerFormat(inp.itemName) + ");");
 	}
 
 	/* Removes a smelting recipe by output */
