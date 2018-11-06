@@ -69,6 +69,16 @@ export class NullItem extends Item{
 	}
 }
 
+export class Fluid {
+	fluidName: string;
+	constructor(fluidName){
+		this.fluidName = fluidName;
+	}
+	tweakerize(quantity?: number): string{
+		return turnToMinetweakerFormat(this.fluidName, quantity);
+	}
+}
+
 
 /* This is where the magic happens. It's also the longest class of the library. */
 export class Script {
@@ -110,40 +120,67 @@ export class Script {
 	}
 
 	/* Adds a shaped recipe. */
-	addShapedRecipe(out: [Item, number], inp: Array<Array<Item>>){
+	addShapedRecipe(out: [Item, number], inp: Array<Array<Item>>): void{
 		var fastTweakerize = x => x.tweakerize(); // Using arrow notation because it's elegant.
 		var inputString:Array<Array<string>> = inp.map(entry => entry.map(fastTweakerize));
 		this.addToCode("recipes.addShaped(" + out[0].tweakerize(out[1]) + ", " + JSON.stringify(inputString) + ");");
 	}
 
 	/* Removes a shaped recipe */
-	removeRecipe(a: Item){
+	removeRecipe(a: Item): void{
 		this.addToCode("recipes.remove(" + turnToMinetweakerFormat(a.itemName) + ");");
 	}
 
 	/* Adds a shapeless recipe */
-	addShapelessRecipe(out: Item, inp: Array<Item>){
+	addShapelessRecipe(out: [Item, number], inp: Array<Item>): void{
 		var fastTweakerize = x => x.tweakerize();
 		var inputString:Array<string> = inp.map(fastTweakerize);
-		this.addToCode("recipes.addShapeless(" + out.tweakerize() + ", " + JSON.stringify(inputString) + ");");
+		this.addToCode("recipes.addShapeless(" + out[0].tweakerize(out[1]) + ", " + JSON.stringify(inputString) + ");");
 	}
 
 	/* Adds a smelting recipe */
-	addSmeltingRecipe(inp: Item, out: Item){
+	addSmeltingRecipe(out: Item, inp: Item): void{
 		this.addToCode("furnace.addRecipe(" + out.tweakerize() +", " + turnToMinetweakerFormat(inp.itemName) + ");");
 	}
 
 	/* Removes a smelting recipe by output */
-	removeSmeltingByOut(out: Item){
+	removeSmeltingByOut(out: Item): void{
 		var removed: Item = new Item(out.itemName);
     		this.addToCode("furnace.remove(" + removed.tweakerize() + ");");
 	}
 
 	/* Removes a smelting recipe by input */
-	removeSmeltingByIn(inp: Item){
+	removeSmeltingByIn(inp: Item): void{
 		var removed: Item = new Item(inp.itemName);
 		this.addToCode("furnace.remove(<*>, " + removed.tweakerize() + ");");
 	}
+
+	/* Adds a Casting Basin Recipe [TINKERS CONSTRUCT] */
+	addBasinRecipe(out: Item, inp: [Fluid, number], ticks: number): void{
+		this.addToCode("mods.tconstruct.Casting.addBasinRecipe(" + out.tweakerize() + ", " + inp[0].tweakerize(inp[1]) + "," + ticks + ");")
+	}
+	addBasinCastRecipe(out: Item, inp: [Fluid, number], cast: [Item, boolean], ticks: number): void{
+		this.addToCode("mods.tconstruct.Casting.addBasinRecipe(" + out.tweakerize() + ", " + inp[0].tweakerize(inp[1]) + "," + cast[0].tweakerize() + ", " + cast[1] + ", " + ticks + ");");
+	}
+
+	/* Removes a Castin Basin Recipe [TINKERS CONSTRUCT] */
+	removeBasinRecipe(out: Item){
+		this.addToCode("mods.tconstruct.Casting.removeBasinRecipe(" + out.tweakerize() + ");")
+	}
+
+	/* Adds a Casting Table Recipe [TINKERS CONSTRUCT] */
+	addCastingRecipe(out: Item, inp: [Fluid, number], ticks: number): void{
+		this.addToCode("mods.tconstruct.Casting.addTableRecipe(" + out.tweakerize() + ", " + inp[0].tweakerize(inp[1]) + "," + ticks + ");")
+	}
+	addCastingCastRecipe(out: Item, inp: [Fluid, number], cast: [Item, boolean], ticks: number): void{
+		this.addToCode("mods.tconstruct.Casting.addTableRecipe(" + out.tweakerize() + ", " + inp[0].tweakerize(inp[1]) + "," + cast[0].tweakerize() + ", " + cast[1] + ", " + ticks + ");");
+	}
+
+	/* Removes a Casting Table Recipe [TINKERS CONSTRUCT] */
+	removeCastingRecipe(out: Item){
+		this.addToCode("mods.tconstruct.Casting.removeTableRecipe(" + out.tweakerize() + ");")
+	}
+
 }
 
  /* END GENERAL LIBRARY */
