@@ -1,6 +1,6 @@
 {
   "name": "mtweakerts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Minetweaker script generator for 1.7.10",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
